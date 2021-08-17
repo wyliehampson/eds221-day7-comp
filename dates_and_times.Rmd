@@ -1,0 +1,101 @@
+---
+title: "Dates and Times"
+author: "Wylie Hampson"
+date: "8/17/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(lubridate)
+```
+
+## Play around with functions in lubridate
+
+```{r}
+my_date <- "03-15-1998"
+
+class(my_date)
+```
+
+ymd, mdy, dmy
+
+```{r}
+my_date_new <- lubridate::mdy(my_date)
+
+class(my_date_new)
+```
+
+## Convert the following to dates:
+
+- 4/6/2005 (month, day, year)
+- 20100806 (year, month, day)
+- 12-June-1974 (day, month, year)
+- my birthday
+
+```{r}
+mdy("4/6/2005")
+ymd(20100806)
+dmy("12-June-1974")
+mdy("March-14-1994")
+
+date_vec <- c("March-14-1994", "02151972", "6-1-82")
+
+mdy(date_vec)
+```
+
+```{r}
+time <- "2020-08-12 11:18"
+ex_5 <- ymd_hm(time)
+ex_5
+class(ex_5)
+
+time_la <- with_tz(ex_5, tzone = "America/Los_Angeles")
+time_la
+
+# Create a date time
+# Convert it to the Sydney Australia time
+
+my_time <- "2001-06-04 15:45"
+my_time_aus <- with_tz(my_time, tzone = "Australia/Sydney")
+my_time_aus
+```
+
+```{r}
+lubridate::week(my_time_aus)
+day(my_time_aus)
+month(my_time_aus)
+minute(my_time_aus)
+hour(my_time_aus)
+second(my_time_aus)
+```
+
+```{r}
+my_bday <- ymd("1994-March-14")
+
+wday(my_bday, label = TRUE)
+```
+
+```{r}
+urchin_counts <- tribble(
+  ~date, ~species, ~size_mm,
+  "10/3/2020", "purple", 55,
+  "10/4/2020", "red", 48,
+  "11/17/2020", "red", 67
+)
+
+urchin_counts_ymd <- urchin_counts %>% 
+  mutate(date = mdy(date)) %>% 
+  mutate(year = year(date), month = month(date), day = day(date))
+```
+
+
+
+
+
+
+
+
+
+
