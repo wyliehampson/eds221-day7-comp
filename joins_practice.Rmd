@@ -1,0 +1,99 @@
+---
+title: "Joins"
+author: "Wylie Hampson"
+date: "8/17/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(palmerpenguins)
+```
+
+### Warm up
+
+```{r}
+cleaned_penguins_1 <- penguins %>% 
+  filter(island %in% c("Biscoe", "Dream")) %>% 
+  select(species:body_mass_g) %>% 
+  mutate(body_mass_kg = body_mass_g / 1000) %>% 
+  rename(location = island)
+
+cleaned_penguins_2 <- penguins %>% 
+  filter(species == "Adelie") %>% 
+  drop_na(flipper_length_mm) %>% 
+  group_by(sex) %>% 
+  summarize(mean_flipper_length = mean(flipper_length_mm),
+            sd_flipper_length = sd(flipper_length_mm),
+            sample_size = n())
+
+cleaned_penguins_2
+```
+
+## Joins practice
+
+```{r}
+animals <- tibble::tribble(
+  ~location,   ~species,  ~maturity,
+   "lagoon",   "bobcat",    "adult",
+    "bluff",   "coyote", "juvenile",
+    "creek",      "fox",    "adult",
+     "oaks", "squirrel", "juvenile",
+    "bluff",   "bobcat",    "adult"
+  )
+
+sites <- tibble::tribble(
+  ~location,      ~full_site_name, ~jurisdiction,
+    "beach",       "Goleta Beach",     "SB City",
+   "lagoon",        "UCSB Lagoon",        "UCSB",
+    "bluff",       "Ellwood Mesa",     "SB City",
+     "oaks", "Fremont Campground",        "USFS"
+  )
+
+```
+
+### Full join
+
+```{r}
+animals_full_join <- full_join(animals, sites, by = "location")
+```
+
+### Left Join
+
+left_join(animals, sites)
+
+```{r}
+animals_left_join <- left_join(animals, sites, by = "location")
+```
+
+### Inner join
+
+```{r}
+animals_inner_join <- inner_join(animals, sites, by = "location")
+```
+
+## Filtering joins
+
+```{r}
+animals_semi_join <- semi_join(animals, sites, by = "location")
+```
+
+### anti-join
+
+```{r}
+animals_anti_join <- anti_join(animals, sites, by = "location")
+
+sites_anti_join <- anti_join(sites, animals, by = "location")
+
+# An example of joining multiple data sets with piping
+join_pipe <- animals %>% 
+  full_join(sites) %>% 
+  inner_join(animals_anti_join)
+```
+
+
+
+
+
+
